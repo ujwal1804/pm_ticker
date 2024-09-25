@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    inde
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TradingView Ticker</title>
+    <style>
+      /* Ensure the ticker fits within the 1892x172 pixel resolution */
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: black; /* To blend well with the widget's dark theme */
+      }
+
+      .ticker-wrapper {
+        position: relative;
+        overflow: hidden;
+        width: 100vw;
+        height: 100vh; /* Height to fit the ticker */
+      }
+
+      .ticker-content {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        animation: scroll 30s linear infinite; /* Infinite scrolling */
+        white-space: nowrap;
+      }
+
+      @keyframes scroll {
+        0% {
+          transform: translateX(100vw);
+        }
+        100% {
+          transform: translateX(-100vw);
+        }
+      }
+
+      .tradingview-widget-container {
+        display: inline-block;
+        width: auto;
+        height: 100vh;
+        white-space: nowrap;
+      }
+
+      .tradingview-widget-container__widget {
+        width: 100vw;
+        height: 100vh;
+      }
+
+      .tradingview-widget-copyright {
+        display: none; /* Hide the copyright for better display on the LED screen */
+      }
+    </style>
+  </head>
+  <body>
+    <!-- TradingView Widget BEGIN -->
+    <div class="ticker-wrapper">
+      <div class="ticker-content">
+        <div class="tradingview-widget-container">
+          <div class="tradingview-widget-container__widget"></div>
+          <script
+            type="text/javascript"
+            src="https://s3.tradingview.com/external-embedding/embed-widget-tickers.js"
+            async
+          >
+            {
+              "symbols": [
+                {
+                  "proName": "FOREXCOM:SPXUSD",
+                  "title": "S&P 500 Index"
+                },
+                {
+                  "proName": "FOREXCOM:NSXUSD",
+                  "title": "US 100 Cash CFD"
+                },
+                {
+                  "proName": "FX_IDC:EURUSD",
+                  "title": "EUR to USD"
+                },
+                {
+                  "proName": "BITSTAMP:BTCUSD",
+                  "title": "Bitcoin"
+                },
+                {
+                  "proName": "BITSTAMP:ETHUSD",
+                  "title": "Ethereum"
+                }
+              ],
+              "isTransparent": true,
+              "showSymbolLogo": true,
+              "colorTheme": "dark",
+              "locale": "en"
+            }
+          </script>
+        </div>
+      </div>
+    </div>
+    <!-- TradingView Widget END -->
+  </body>
+</html>

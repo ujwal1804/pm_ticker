@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Forex Ticker</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body, html {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #333;
+    }
+
+    .ticker-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+      overflow: hidden;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      border: 5px solid #444;
+      padding: 10px;
+    }
+
+    .ticker {
+      display: inline-block;
+      animation: scroll 25s linear infinite;
+      font-size: 3vw;
+      color: #fff;
+    }
+
+    @keyframes scroll {
+      0% {
+        transform: translateX(100%);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+
+    .currency {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 0 10px;
+      border: 2px solid #fff;
+      border-radius: 10px;
+      background-color: #222;
+      font-family: 'Arial', sans-serif;
+      font-weight: bold;
+      color: #0f0;
+    }
+
+    /* Currency symbols */
+    .currency::before {
+      content: attr(data-symbol);
+      margin-right: 10px;
+      color: #ffcc00;
+      font-size: 1.5em;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="ticker-container">
+    <div class="ticker" id="ticker">
+      <!-- Live Forex rates will be injected here -->
+    </div>
+  </div>
+
+  <script>
+    // Your ExchangeRate API key
+    const API_KEY = '87326c5387ca613d632a00f4';  // Replace with your actual API key from ExchangeRate-API
+
+    // Array of currency pairs with symbols (Forex)
+    const currencyPairs = [
+      { from: 'USD', to: 'EUR', symbol: '💵/💶' },  // USD to EUR
+      { from: 'USD', to: 'JPY', symbol: '💵/💴' },  // USD to JPY
+      { from: 'USD', to: 'GBP', symbol: '💵/💷' },  // USD to GBP
+      { from: 'USD', to: 'CAD', symbol: '💵/🇨🇦' },  // USD to CAD
+      { from: 'USD', to: 'AUD', symbol: '💵/🇦🇺' },  // USD to AUD
+      { from: 'USD', to: 'NZD', symbol: '💵/🇳🇿' },  // USD to NZD
+      { from: 'EUR', to: 'USD', symbol: '💶/💵' },  // EUR to USD
+      { from: 'GBP', to: 'USD', symbol: '💷/💵' },  // GBP to USD
+    ];
+
+    // Function to fetch exchange rate for a specific pair
+    async function fetchExchangeRate(from, to) {
+      const url = `https://v6.exchangerate-api.com/v6/${API_KEY}/pair/${from}/${to}`;
+      const response = await fetch(url);
+      const data = await response.json();
+
+      // Check if the response contains the rate
+      if (data && data.conversion_rate) {
+        return `${parseFloat(data.conversion_rate).toFixed(4)}`;
+      } else {
+        console.error(`Error fetching data for ${from}/${to}:`, data);
+        return `Data Unavailable`;
+      }
+    }
+
+    // Function to fetch and display all exchange rates
+    async function displayForexRates() {
+      const tickerElement = document.getElementById('ticker');
+
+      for (const pair of currencyPairs) {
+        const rate = await fetchExchangeRate(pair.from, pair.to);
+        const spanElement = document.createElement('span');
+        spanElement.className = 'currency';
+        spanElement.setAttribute('data-symbol', pair.symbol);
+        spanElement.innerText = `${pair.from}/${pair.to}: ${rate}`;
+        tickerElement.appendChild(spanElement);
+      }
+    }
+
+    // Call the function to display rates
+    displayForexRates();
+  </script>
+
+</body>
+</html>
