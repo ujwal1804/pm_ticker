@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live Market Ticker</title>
+  <title>Live Forex Ticker</title>
   <style>
     * {
       margin: 0;
@@ -83,14 +83,16 @@
     // Your ExchangeRate API key
     const API_KEY = '87326c5387ca613d632a00f4';  // Replace with your actual API key from ExchangeRate-API
 
-    // Array of currency pairs with symbols (Forex, Commodities, Cryptos)
+    // Array of currency pairs with symbols (Forex)
     const currencyPairs = [
-      { from: 'EUR', to: 'USD', symbol: '€/$' },  // Euro/USD
-      { from: 'USD', to: 'JPY', symbol: '$/¥' },  // USD/JPY
-      { from: 'GBP', to: 'USD', symbol: '£/$' },  // GBP/USD
-      { from: 'USD', to: 'CHF', symbol: '$/₣' },  // USD/CHF
-      { from: 'USD', to: 'CAD', symbol: '$/C$' },  // USD/CAD
-      { from: 'AUD', to: 'USD', symbol: 'A$/$' },  // AUD/USD
+      { from: 'USD', to: 'EUR', symbol: '💵/💶' },  // USD to EUR
+      { from: 'USD', to: 'JPY', symbol: '💵/💴' },  // USD to JPY
+      { from: 'USD', to: 'GBP', symbol: '💵/💷' },  // USD to GBP
+      { from: 'USD', to: 'CAD', symbol: '💵/🇨🇦' },  // USD to CAD
+      { from: 'USD', to: 'AUD', symbol: '💵/🇦🇺' },  // USD to AUD
+      { from: 'USD', to: 'NZD', symbol: '💵/🇳🇿' },  // USD to NZD
+      { from: 'EUR', to: 'USD', symbol: '💶/💵' },  // EUR to USD
+      { from: 'GBP', to: 'USD', symbol: '💷/💵' },  // GBP to USD
     ];
 
     // Function to fetch exchange rate for a specific pair
