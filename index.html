@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live Forex Ticker</title>
+  <title>Live Market Ticker</title>
   <style>
     * {
       margin: 0;
@@ -17,27 +17,21 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #333;
     }
 
     .ticker-container {
       position: relative;
       width: 100%;
-      height: 100%;
-      background-color: #000;
       overflow: hidden;
       white-space: nowrap;
-      display: flex;
-      align-items: center;
-      border: 5px solid #444;
+      border-radius: 8px;
       padding: 10px;
     }
 
     .ticker {
       display: inline-block;
       animation: scroll 25s linear infinite;
-      font-size: 3vw;
-      color: #fff;
+      white-space: nowrap;
     }
 
     @keyframes scroll {
@@ -49,24 +43,56 @@
       }
     }
 
-    .currency {
-      display: inline-block;
+    .ticker-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       padding: 10px 20px;
-      margin: 0 10px;
-      border: 2px solid #fff;
-      border-radius: 10px;
-      background-color: #222;
-      font-family: 'Arial', sans-serif;
-      font-weight: bold;
-      color: #0f0;
+      margin-right: 10px;
+      border-radius: 8px;
+      background-color: #eef2f9;
+      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+      display: inline-block; /* Required for proper scrolling */
     }
 
-    /* Currency symbols */
-    .currency::before {
-      content: attr(data-symbol);
-      margin-right: 10px;
-      color: #ffcc00;
-      font-size: 1.5em;
+    .ticker-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+
+    .icon {
+      width: 25px;
+      height: 25px;
+      margin-right: 8px;
+      border-radius: 50%;
+    }
+
+    .ticker-title {
+      font-weight: bold;
+      color: #333;
+      font-size: 1rem;
+    }
+
+    .ticker-price {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #222;
+      margin: 5px 0;
+    }
+
+    .ticker-change {
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
+    .positive {
+      color: #4caf50; /* Green for positive change */
+    }
+
+    .negative {
+      color: #f44336; /* Red for negative change */
     }
 
   </style>
@@ -75,38 +101,51 @@
 
   <div class="ticker-container">
     <div class="ticker" id="ticker">
-      <!-- Live Forex rates will be injected here -->
+      <!-- Ticker items will be injected here -->
     </div>
   </div>
 
   <script>
-    // Your ExchangeRate API key
-    const API_KEY = '87326c5387ca613d632a00f4';  // Replace with your actual API key from ExchangeRate-API
+    // Your Twelve Data API key
+    const API_KEY = '563056ddf3b645d2a6e4f5e06448716d';
 
-    // Array of currency pairs with symbols (Forex)
+    // Array of currency pairs with symbols
     const currencyPairs = [
-      { from: 'USD', to: 'EUR', symbol: '💵/💶' },  // USD to EUR
-      { from: 'USD', to: 'JPY', symbol: '💵/💴' },  // USD to JPY
-      { from: 'USD', to: 'GBP', symbol: '💵/💷' },  // USD to GBP
-      { from: 'USD', to: 'CAD', symbol: '💵/🇨🇦' },  // USD to CAD
-      { from: 'USD', to: 'AUD', symbol: '💵/🇦🇺' },  // USD to AUD
-      { from: 'USD', to: 'NZD', symbol: '💵/🇳🇿' },  // USD to NZD
-      { from: 'EUR', to: 'USD', symbol: '💶/💵' },  // EUR to USD
-      { from: 'GBP', to: 'USD', symbol: '💷/💵' },  // GBP to USD
+      { symbol: 'XAU/USD', icon: '🔶', name: 'Gold' },  // Gold/USD
+      { symbol: 'EUR/USD', icon: '🇪🇺', name: 'Euro/USD' },  // Euro/USD
+      { symbol: 'BTC/USD', icon: '₿', name: 'Bitcoin' },  // Bitcoin/USD
+      { symbol: 'ETH/USD', icon: 'Ξ', name: 'Ethereum' },  // Ethereum/USD
+      { symbol: 'USD/JPY', icon: '💴', name: 'USD/JPY' },  // USD/JPY
+      { symbol: 'GBP/USD', icon: '💷', name: 'GBP/USD' },  // GBP/USD
+      { symbol: 'XAG/USD', icon: '⚪️', name: 'Silver' },  // Silver/USD
+      { symbol: 'USD/CHF', icon: '₣', name: 'USD/CHF' },  // USD/CHF
+      { symbol: 'USD/CAD', icon: 'C$', name: 'USD/CAD' },  // USD/CAD
+      { symbol: 'AUD/USD', icon: 'A$', name: 'AUD/USD' },  // AUD/USD
+      { symbol: 'NZD/USD', icon: 'NZ$', name: 'NZD/USD' },  // NZD/USD
     ];
 
-    // Function to fetch exchange rate for a specific pair
-    async function fetchExchangeRate(from, to) {
-      const url = `https://v6.exchangerate-api.com/v6/${API_KEY}/pair/${from}/${to}`;
-      const response = await fetch(url);
-      const data = await response.json();
-
-      // Check if the response contains the rate
-      if (data && data.conversion_rate) {
-        return `${parseFloat(data.conversion_rate).toFixed(4)}`;
-      } else {
-        console.error(`Error fetching data for ${from}/${to}:`, data);
-        return `Data Unavailable`;
+    // Function to fetch the latest exchange rate using Twelve Data API
+    async function fetchExchangeRate(symbol) {
+      const url = `https://api.twelvedata.com/time_series?symbol=${symbol}&interval=1min&format=JSON&apikey=${API_KEY}`;
+      
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        // Check if the response contains the rate
+        if (data && data.values && data.values.length > 1) {
+          const latest = data.values[0];
+          const previous = data.values[1];
+          const price = parseFloat(latest.close).toFixed(2);
+          const change = ((latest.close - previous.close) / previous.close * 100).toFixed(2);
+          return { price, change };
+        } else {
+          console.error(`Error fetching data for ${symbol}:`, data);
+          return { price: 'N/A', change: 'N/A' };
+        }
+      } catch (error) {
+        console.error(`Fetch error for ${symbol}:`, error);
+        return { price: 'Error', change: 'Error' };
       }
     }
 
@@ -115,12 +154,22 @@
       const tickerElement = document.getElementById('ticker');
 
       for (const pair of currencyPairs) {
-        const rate = await fetchExchangeRate(pair.from, pair.to);
-        const spanElement = document.createElement('span');
-        spanElement.className = 'currency';
-        spanElement.setAttribute('data-symbol', pair.symbol);
-        spanElement.innerText = `${pair.from}/${pair.to}: ${rate}`;
-        tickerElement.appendChild(spanElement);
+        const { price, change } = await fetchExchangeRate(pair.symbol);
+        const changeClass = parseFloat(change) >= 0 ? 'positive' : 'negative';
+
+        const tickerItem = document.createElement('div');
+        tickerItem.className = 'ticker-item';
+
+        tickerItem.innerHTML = `
+          <div class="ticker-header">
+            <span class="icon">${pair.icon}</span>
+            <span class="ticker-title">${pair.name}</span>
+          </div>
+          <div class="ticker-price">${price}</div>
+          <div class="ticker-change ${changeClass}">${change}%</div>
+        `;
+
+        tickerElement.appendChild(tickerItem);
       }
     }
 
