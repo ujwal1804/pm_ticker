@@ -17,6 +17,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #121212; /* Dark background for contrast */
     }
 
     .ticker-container {
@@ -24,16 +26,14 @@
       width: 100%;
       overflow: hidden;
       white-space: nowrap;
-      padding: 10px;
-      border-radius: 8px;
-      background-color: #fff;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      border-radius: 10px;
     }
 
     .ticker {
       display: inline-block;
       white-space: nowrap;
-      animation: scroll 30s linear infinite;
+      animation: scroll 20s linear infinite;
     }
 
     @keyframes scroll {
@@ -50,12 +50,18 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 10px 20px;
-      margin-right: 10px;
+      padding: 10px 30px;
+      margin-right: 20px;
       border-radius: 8px;
-      background-color: #eef2f9;
-      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-      display: inline-block; /* Required for proper scrolling */
+      background: #1e1e1e;
+      border: 1px solid #444; /* Sharp border for contrast */
+      display: inline-block;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .ticker-item:hover {
+      transform: scale(1.05);
+      border-color: #00ffcc;
     }
 
     .ticker-header {
@@ -65,36 +71,36 @@
     }
 
     .icon {
-      width: 25px;
-      height: 25px;
+      font-size: 1.5rem;
       margin-right: 8px;
-      border-radius: 50%;
+      color: #00ffcc;
     }
 
     .ticker-title {
       font-weight: bold;
-      color: #333;
+      color: #fff;
       font-size: 1rem;
+      text-transform: uppercase;
     }
 
     .ticker-price {
-      font-size: 1.2rem;
+      font-size: 1.4rem;
       font-weight: bold;
-      color: #222;
+      color: #00ffcc;
       margin: 5px 0;
     }
 
     .ticker-change {
-      font-size: 1rem;
+      font-size: 1.1rem;
       font-weight: bold;
     }
 
     .positive {
-      color: #4caf50; /* Green for positive change */
+      color: #4caf50; /* Sharp green for positive change */
     }
 
     .negative {
-      color: #f44336; /* Red for negative change */
+      color: #ff1744; /* Sharp red for negative change */
     }
 
   </style>
